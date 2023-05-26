@@ -1,8 +1,9 @@
 package com.imdachillo.associationrules.models;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Transaction {
+public class Transaction implements Serializable {
     private List<String> articles;
     private int support;
 

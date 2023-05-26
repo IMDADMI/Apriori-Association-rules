@@ -6,13 +6,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
-public class FrequentItemsAssociation {
+public class FrequentItemsAssociation implements Serializable {
     @JsonProperty(value = "frequentItemSet", required = true)
     List<Transaction> frequentItemSet;
     @JsonProperty(value = "association", required = true)
