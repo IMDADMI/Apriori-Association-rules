@@ -13,17 +13,13 @@ import java.util.Set;
 @Service
 public class UtilServiceImpl implements UtilService {
     @Override
-    public List<Transaction> combinson(List<Transaction> k_frequent_item_set, int k){
+    public List<Transaction> combination(List<Transaction> k_frequent_item_set, int k){
         Set<String> newList = new HashSet<>();
         k_frequent_item_set.forEach(e->newList.addAll(e.getArticles()));
         if(newList.size() < k)
             return null;
 
         return getCombination(newList.stream().toList(),k,true,k_frequent_item_set);
-    }
-    @Override
-    public void sayHi(){
-        System.out.println("suu");
     }
     @Override
     public List<Transaction> getCombination(List<String> list,int r,boolean isPrune,List<Transaction> k_frequent_item_set){
@@ -50,7 +46,7 @@ public class UtilServiceImpl implements UtilService {
         return true;
     }
     @Override
-    public int calculFequency(Transaction candidate,List<Transaction> transactions){
+    public int FrequencyCalculator(Transaction candidate, List<Transaction> transactions){
         int s_c = 0;
         for (Transaction list: transactions)
             if(list.equalsC(candidate))

@@ -1,11 +1,8 @@
 package com.imdachillo.associationrules.models;
-
-
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
-
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode

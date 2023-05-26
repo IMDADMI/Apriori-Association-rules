@@ -16,8 +16,6 @@ import java.util.Map;
 @CrossOrigin
 @RequestMapping("/rules")
 public class AprioriAndAssociationController {
-
-
     private final AssociationService service;
     @Autowired
     public AprioriAndAssociationController(AssociationService service) {
@@ -27,9 +25,6 @@ public class AprioriAndAssociationController {
     public ResponseEntity<FrequentItemsAssociation> getSmallTest() throws IOException, NotBoundException {
         AssociationClient associationClient = new AssociationClient();
         FrequentItemsAssociation association1 = associationClient.getAssociationsRulesFromTheServer("src\\dataSet\\test.csv", "2", "70");
-
-//        FrequentItemsAssociation association =  service.getAssociationRules("src\\dataSet\\test.csv", "2", "70");
-//        return new ResponseEntity<>(association, HttpStatus.OK);
         return new ResponseEntity<>(association1, HttpStatus.OK);
 
     }
@@ -42,13 +37,24 @@ public class AprioriAndAssociationController {
 
     }
     @PostMapping(path = "userTest")
-    public ResponseEntity<FrequentItemsAssociation> get(@RequestBody Map<String,String> body) throws IOException {
+    public ResponseEntity<FrequentItemsAssociation> get(@RequestBody Map<String,String> body) throws IOException, NotBoundException {
         String minimum_support = body.get("min_sup");
         String minimum_confidence = body.get("min_conf");
         String dataSet = body.get("dataset");
         service.writeTransactions(dataSet);
-        FrequentItemsAssociation association = service.getAssociationRules("src\\dataSet\\userData.csv", minimum_support, minimum_confidence);
+        AssociationClient associationClient = new AssociationClient();
+        FrequentItemsAssociation association = associationClient.getAssociationsRulesFromTheServer("src\\dataSet\\userData.csv", minimum_support, minimum_confidence);
         return new ResponseEntity<>(association, HttpStatus.OK);
+    }
+    @PostMapping("userTest/auto")
+    public ResponseEntity<FrequentItemsAssociation> autoChoosing(@RequestBody Map<String,String> body) throws IOException, NotBoundException {
+        String dataSet = body.get("dataset");
+        service.writeTransactions(dataSet);
+        String minimumSupport = String.valueOf(service.getMinimumSupport());
+        AssociationClient associationClient = new AssociationClient();
+        FrequentItemsAssociation association = associationClient.getAssociationsRulesFromTheServer("src\\dataSet\\userData.csv", minimumSupport,"50" );
+        return new ResponseEntity<>(association, HttpStatus.OK);
+
     }
 
 

@@ -39,10 +39,6 @@ public class DataServiceImpl implements DataService {
                 data.add(element);
             }
         }
-        double start = new Date().getTime();
-        System.out.println(service.getMinimumSupport(data));
-        double end = new Date().getTime();
-        System.out.println("the time is : "+(end-start));
         return  data;
     }
 }

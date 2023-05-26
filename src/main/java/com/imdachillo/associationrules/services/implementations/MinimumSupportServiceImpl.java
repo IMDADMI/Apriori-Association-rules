@@ -34,8 +34,6 @@ public class MinimumSupportServiceImpl implements MinimumSupportService {
         double avgSup = sum.get()/N;
         double minimum_threshold = avgSup/D;
         double minimumSupport = (minimum_threshold * D)/N;
-        System.out.println(Math.ceil(minimumSupport));
-        System.out.println("min support is : "+(minimumSupport));
-        return (int)minimumSupport;
+        return (int)Math.ceil(minimumSupport);
     }
 }

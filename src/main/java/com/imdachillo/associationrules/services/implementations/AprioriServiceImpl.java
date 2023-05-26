@@ -21,32 +21,28 @@ public class AprioriServiceImpl implements AprioriService {
     @Override
     public List<Transaction> GenerationFrequentArticles(int minSupport,List<List<String>> dataSet){
         this.dataSet = dataSet;
-        System.out.println("start ...");
 
-        List<Transaction> transactionFrequent;
-        List<Transaction> transactionCandidat;
+        List<Transaction> frequentTransaction;
+        List<Transaction> candidateTransaction;
 
-        transactionFrequent = generationArticlesIndividuel();
+        frequentTransaction = generationIndividualArticles();
 
         List<Transaction> filteredTransactions;
-        double start = new Date().getTime();
         for (int k = 2;; k++) {
-            if(transactionFrequent.size() == 1)
-                if(transactionFrequent.get(0).getArticles().size() < k)
+            if(frequentTransaction.size() == 1)
+                if(frequentTransaction.get(0).getArticles().size() < k)
                     break;
-            transactionCandidat = candidatEnsemble(transactionFrequent,k);
+            candidateTransaction = listOfCandidates(frequentTransaction,k);
 
-            filteredTransactions = filtrage(transactionCandidat,minSupport);
+            filteredTransactions = filtering(candidateTransaction,minSupport);
             if (filteredTransactions.isEmpty())
                 break;
-            transactionFrequent = filteredTransactions;
+            frequentTransaction = filteredTransactions;
         }
-        double end = new Date().getTime();
-        System.out.println("end\ntime of generation is : "+(end-start));
-        return transactionFrequent;
+        return frequentTransaction;
     }
     @Override
-    public List<Transaction> generationArticlesIndividuel(){
+    public List<Transaction> generationIndividualArticles(){
         List<Transaction> transactionUniqueHashed = new ArrayList<>();
         Map<String,Integer> _transactionUnique = new HashMap<>();
 
@@ -63,13 +59,13 @@ public class AprioriServiceImpl implements AprioriService {
         return transactionUniqueHashed ;
     }
     @Override
-    public  List<Transaction>  candidatEnsemble(List<Transaction> listCand, int k){
-        List<Transaction> transactions = utils.combinson(listCand,k);
-            listCand = modiferSupport(transactions);
-        return listCand;
+    public  List<Transaction> listOfCandidates(List<Transaction> CandidatesList, int k){
+        List<Transaction> transactions = utils.combination(CandidatesList,k);
+            CandidatesList = modifierSupport(transactions);
+        return CandidatesList;
     }
     @Override
-    public List<Transaction> filtrage(List<Transaction> list, int minSupport){
+    public List<Transaction> filtering(List<Transaction> list, int minSupport){
         List<Transaction> newListe = new ArrayList<>();
         for (Transaction transaction :list)
             if(transaction.getSupport() >= minSupport)
@@ -77,11 +73,11 @@ public class AprioriServiceImpl implements AprioriService {
         return newListe;
     }
     @Override
-    public  List<Transaction>  modiferSupport(List<Transaction> listCand){
-        for (Transaction transaction : listCand)
-            transaction.setSupport(utils.calculFequency(transaction,total));
+    public  List<Transaction> modifierSupport(List<Transaction> CandidatesList){
+        for (Transaction transaction : CandidatesList)
+            transaction.setSupport(utils.FrequencyCalculator(transaction,total));
 
-        return listCand;
+        return CandidatesList;
     }
 
 

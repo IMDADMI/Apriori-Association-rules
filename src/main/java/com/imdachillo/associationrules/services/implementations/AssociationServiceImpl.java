@@ -3,10 +3,7 @@ package com.imdachillo.associationrules.services.implementations;
 import com.imdachillo.associationrules.models.Association;
 import com.imdachillo.associationrules.models.FrequentItemsAssociation;
 import com.imdachillo.associationrules.models.Transaction;
-import com.imdachillo.associationrules.services.interfaces.AprioriService;
-import com.imdachillo.associationrules.services.interfaces.AssociationService;
-import com.imdachillo.associationrules.services.interfaces.DataService;
-import com.imdachillo.associationrules.services.interfaces.UtilService;
+import com.imdachillo.associationrules.services.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +19,14 @@ public class AssociationServiceImpl implements AssociationService {
     private final DataService dataservice;
     private final AprioriService aprioriService;
     private final UtilService utils ;
-
+    private final MinimumSupportService minimumSupportService;
 
     @Autowired
-    public AssociationServiceImpl(DataService service, AprioriService aprioriService, UtilService utils) {
+    public AssociationServiceImpl(DataService service, AprioriService aprioriService, UtilService utils, MinimumSupportService minimumSupportService) {
         this.dataservice = service;
         this.aprioriService = aprioriService;
         this.utils = utils;
+        this.minimumSupportService = minimumSupportService;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class AssociationServiceImpl implements AssociationService {
         double start = new Date().getTime();
         List<List<String>> itemSets = dataservice.getDataFromDataSet(path);
         List<Transaction> lastFrequentItemsSets = aprioriService.GenerationFrequentArticles(Integer.parseInt(min_supp),itemSets);
-        List<Association> rules = this.generationReglesAssoctiation(lastFrequentItemsSets,Integer.parseInt(min_conf));
+        List<Association> rules = this.associationRulesGeneration(lastFrequentItemsSets,Integer.parseInt(min_conf));
         double end = new Date().getTime();
         double time = end-start;
         AprioriServiceImpl.total.clear();
@@ -50,20 +48,25 @@ public class AssociationServiceImpl implements AssociationService {
     }
 
     @Override
-    public List<Association> generationReglesAssoctiation(List<Transaction> frequentArticles, double minConfidence){
+    public int getMinimumSupport() throws IOException {
+        return minimumSupportService.getMinimumSupport(dataservice.getDataFromDataSet("src\\dataSet\\userData.csv"));
+    }
+
+    @Override
+    public List<Association> associationRulesGeneration(List<Transaction> frequentArticles, double minConfidence){
         List<Association> _associations = new ArrayList<>();
         for(Transaction transaction : frequentArticles){
             for (int combination = 1; combination < transaction.getArticles().size(); combination++) {
                 List<Transaction> joinTransaction = utils.getCombination(transaction.getArticles(),combination,false,null);
                 for(Transaction ass : joinTransaction){
-                    ass.setSupport(utils.calculFequency(ass, AprioriServiceImpl.total));
+                    ass.setSupport(utils.FrequencyCalculator(ass, AprioriServiceImpl.total));
                     List<String> removedElement = new ArrayList<>(transaction.getArticles());
                     List<String> l_s = new ArrayList<>(transaction.getArticles());
                     l_s.removeAll(ass.getArticles());
                     removedElement.removeAll(ass.getArticles());
                     double l_support = transaction.getSupport();
                     double s_support = ass.getSupport();
-                    double l_s_support = utils.calculFequency(new Transaction(l_s), AprioriServiceImpl.total);
+                    double l_s_support = utils.FrequencyCalculator(new Transaction(l_s), AprioriServiceImpl.total);
                     double confidence_value = (l_support/s_support)*100;
                     if(confidence_value >= minConfidence){
                         Association association = new Association(ass.getArticles(),removedElement,confidence_value,confidence_value/l_s_support);
