@@ -15,7 +15,11 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @RequestMapping("/rules")
+
 public class AprioriAndAssociationController {
+    /***
+     * <i><b>all the above methods are end points to get the association rules</i></b>
+     */
     private final AssociationService service;
     @Autowired
     public AprioriAndAssociationController(AssociationService service) {

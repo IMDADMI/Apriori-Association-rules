@@ -29,6 +29,13 @@ public class AssociationServiceImpl implements AssociationService {
         this.minimumSupportService = minimumSupportService;
     }
 
+    /**
+     * this is the method used for getting the association rules
+     * @param path the path parameter indicate the path of the dataset
+     * @param min_supp the min_supp indicate the minimum support for generating frequent itemset
+     * @param min_conf the min_conf is for the minimum confidence
+     * @return the returned value is the association rules
+    * */
     @Override
     public FrequentItemsAssociation getAssociationRules(String path, String min_supp, String min_conf) throws IOException {
         double start = new Date().getTime();
@@ -40,6 +47,10 @@ public class AssociationServiceImpl implements AssociationService {
         AprioriServiceImpl.total.clear();
         return new FrequentItemsAssociation(lastFrequentItemsSets,rules,time);
     }
+    /**
+     * this method is used to write user transaction into the userData.csv file
+     * @param transactions the transactions are a list of string that represent transaction
+     * */
     @Override
     public void writeTransactions(String transactions) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter("src\\dataSet\\userData.csv"));
@@ -47,11 +58,18 @@ public class AssociationServiceImpl implements AssociationService {
         writer.close();
     }
 
+    /**
+     * this method get the minimum support from the MinimumSupport service
+     * */
     @Override
     public int getMinimumSupport() throws IOException {
         return minimumSupportService.getMinimumSupport(dataservice.getDataFromDataSet("src\\dataSet\\userData.csv"));
     }
-
+    /**
+     * this method is responsible for generating the association rules after getting the frequent item set
+     * @param frequentArticles the first parameter is the list of frequent item set
+     * @param minConfidence the second parameter is used for filtering the associations based on the minimum Confidence
+     * */
     @Override
     public List<Association> associationRulesGeneration(List<Transaction> frequentArticles, double minConfidence){
         List<Association> _associations = new ArrayList<>();

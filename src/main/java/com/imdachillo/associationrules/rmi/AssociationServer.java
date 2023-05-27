@@ -13,6 +13,12 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class AssociationServer {
+    /***
+     * <b><i>here the main method should be executed so that the server push the available methods to register and waiting to receive the calls from the clients to execute the specified methods.</i></b>
+     * @param args
+     * @throws RemoteException
+     * @throws AlreadyBoundException
+     */
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {
         ApplicationContext context = new AnnotationConfigApplicationContext(Configurations.class);
         AssociationService associationService = context.getBean(AssociationServiceImpl.class);

@@ -14,6 +14,12 @@ public class MinimumSupportServiceImpl implements MinimumSupportService {
     Map<String,Integer> frequencyOfItem;
     Map<String,Integer> supportValueOfItem;
 
+    /**
+     * this method use the algorithm mentioned in the report from the indonesia university which find the minimum support
+     * based on the dataset characteristic
+     * @param dataset this represents the dataset used in the algorithm
+     * @return the return value is the minimum support
+     * */
     @Override
     public int getMinimumSupport(List<List<String>> dataset){
         double D = dataset.size();

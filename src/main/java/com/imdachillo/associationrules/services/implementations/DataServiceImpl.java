@@ -23,6 +23,11 @@ public class DataServiceImpl implements DataService {
         this.service = service;
     }
 
+    /**
+     * this method transform the data from the file to a list
+     * @param path this refers to the path of the file that contain the dataset
+     * @return the returned value if the dataset as a list of lists
+     * */
     @Override
     public List<List<String>> getDataFromDataSet(String path) throws IOException {
         if(path.isEmpty())
